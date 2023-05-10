@@ -3,18 +3,22 @@ const BASE_URL =
   "https://gist.githubusercontent.com/abdalabaaji/8ac1f0ff9c9e919c72c5f297a9b5266e/raw/a67887ba7445a6887be4c748fcfa0931f0dd165c/recipes";
 
 export async function getRecipes() {
-  console.log("localStorage: ", localStorage);
-  if (!localStorage.recipes) {
-    console.log("loading from API");
-    const data = await fetch(BASE_URL);
-    const recipes = await data.json();
-    localStorage.recipes = JSON.stringify(recipes);
-    return recipes;
-  } else {
-    console.log("loading from local storage");
-    return JSON.parse(localStorage.recipes);
-  }
+  var requestOptions = {
+    method: "GET",
+    redirect: "follow",
+  };
+
+  fetch("http://localhost:3000/api/recipes/recipe-repo", requestOptions)
+    .then((response) => response.text())
+    .then((result) => {
+      console.log("JSON.parse(response.data): ", JSON.parse(result));
+      let result1 = JSON.parse(result);
+      console.log("rsult 1: ", result1);
+      return result1;
+    })
+    .catch((error) => alert("error", error));
 }
+
 export async function getRecipe(id) {
   const recipes = await getRecipes();
   return recipes.find((recipe) => recipe.id == id);
